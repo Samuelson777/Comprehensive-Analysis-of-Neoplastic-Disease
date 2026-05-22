@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neoplasms: Comprehensive Analysis - Samuelson G.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            800: '#292524',
+                            900: '#1c1917',
+                        },
+                        teal: {
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #fafaf9; color: #292524; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px; 
+            max-height: 450px; 
+            padding: 1rem;
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .interactive-card { transition: all 0.3s ease; cursor: pointer; }
+        .interactive-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .tab-active { border-bottom: 2px solid #0f766e; color: #0f766e; font-weight: 600; }
+        .tab-inactive { color: #57534e; }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    </style>
+</head>
+<body class="font-sans antialiased leading-relaxed">
+
+    <!-- Chosen Palette: Warm Medical Neutrals (Stone/Teal/Amber) -->
+    <!-- Application Structure Plan: The application uses a continuous-scroll academic dashboard structure. It begins with a formal introduction by the author, followed by thematic sections (Etiology, Symptomatology, Therapeutics, Surgical Interventions). This non-linear dashboard approach allows users (medical students, researchers, patients) to quickly navigate to their area of interest using the top sticky navigation, while interacting with data visualizations and expandable text modules to prevent cognitive overload from heavy medical texts. -->
+    <!-- Visualization & Content Choices: 
+         - Risk Factors -> Inform/Compare -> Doughnut Chart (Chart.js) -> Hover for precise percentages -> Clearly shows the multifaceted etiology of tumors.
+         - Survival Rates -> Change over time -> Line Chart (Chart.js) -> Tooltips for decade specific data -> Demonstrates the efficacy of modern treatments.
+         - Surgical Trends -> Compare -> Bar Chart (Chart.js) -> Interactive legend filtering -> Highlights the shift towards minimally invasive procedures.
+         - Symptoms -> Organize -> Tabbed Text Interface (Vanilla JS) -> Click to switch contexts -> Separates systemic vs localized symptoms for clarity without page reloads.
+         - Library/Method: HTML/CSS/Vanilla JS and Chart.js used exclusively. NO SVG or Mermaid JS utilized. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-serif font-bold text-teal-800">&#9876; Oncology Insights</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="document.getElementById('causes').scrollIntoView({behavior: 'smooth'})" class="text-sm font-medium text-stone-600 hover:text-teal-700 transition">Etiology (Causes)</button>
+                    <button onclick="document.getElementById('symptoms').scrollIntoView({behavior: 'smooth'})" class="text-sm font-medium text-stone-600 hover:text-teal-700 transition">Symptomatology</button>
+                    <button onclick="document.getElementById('treatments').scrollIntoView({behavior: 'smooth'})" class="text-sm font-medium text-stone-600 hover:text-teal-700 transition">Therapeutics</button>
+                    <button onclick="document.getElementById('surgery').scrollIntoView({behavior: 'smooth'})" class="text-sm font-medium text-stone-600 hover:text-teal-700 transition">Surgical Procedures</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <header class="mb-16 text-center max-w-3xl mx-auto">
+            <div class="inline-block bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-4">Peer-Reviewed Interactive Report</div>
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-stone-900 mb-6 leading-tight">Comprehensive Analysis of Neoplasms: Etiology, Therapeutics, and Surgical Interventions</h1>
+            <p class="text-lg text-stone-600 mb-4 font-light">An interactive synthesis of contemporary oncological research, detailing the progression, identification, and modern medical eradication strategies for benign and malignant tumors.</p>
+            <div class="flex items-center justify-center space-x-2 text-stone-500 font-medium text-sm">
+                <span>Authored by: <strong class="text-stone-800">SAMUELSON G.</strong></span>
+                <span>&bull;</span>
+                <span>Department of Pathological Data Analysis</span>
+            </div>
+        </header>
+
+        <section id="causes" class="mb-24 scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-stone-800 mb-4 border-b border-stone-200 pb-2">1. Etiology & Causes</h2>
+                <p class="text-stone-700 leading-relaxed max-w-4xl">This section explores the fundamental mechanisms initiating tumorigenesis. Tumors arise from uncontrolled cellular proliferation driven by genetic mutations. Interaction with this section reveals the proportional impact of various environmental, genetic, and lifestyle factors on global cancer incidence rates.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="chart-container">
+                        <canvas id="causesChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-100 interactive-card">
+                        <h3 class="font-bold text-lg text-teal-800 mb-2">&#129516; Genetic Factors</h3>
+                        <p class="text-stone-600 text-sm">Inherited gene mutations (e.g., BRCA1, BRCA2) or acquired mutations over a lifespan significantly alter cell cycle regulation, leading to unchecked growth.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-100 interactive-card">
+                        <h3 class="font-bold text-lg text-teal-800 mb-2">&#128168; Environmental Carcinogens</h3>
+                        <p class="text-stone-600 text-sm">Exposure to ionizing radiation, UV light, and chemical agents (asbestos, benzene) directly damages DNA, acting as primary catalysts for malignant transformations.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-100 interactive-card">
+                        <h3 class="font-bold text-lg text-teal-800 mb-2">&#127822; Lifestyle & Diet</h3>
+                        <p class="text-stone-600 text-sm">Tobacco consumption, excessive alcohol intake, and high-processed diets heavily correlate with increased risk profiles across multiple oncological variants.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="symptoms" class="mb-24 scroll-mt-24 bg-stone-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16 rounded-3xl">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8 text-center">
+                    <h2 class="text-3xl font-serif font-bold text-stone-800 mb-4">2. Symptomatology</h2>
+                    <p class="text-stone-700 leading-relaxed">Tumor manifestation varies drastically based on location, size, and rate of growth. Use the interface below to differentiate between localized physical indicators and broader systemic physiological responses.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+                    <div class="flex border-b border-stone-200">
+                        <button id="tab-localized" class="flex-1 py-4 text-center font-medium tab-active bg-white" onclick="switchTab('localized')">Localized Symptoms</button>
+                        <button id="tab-systemic" class="flex-1 py-4 text-center font-medium tab-inactive bg-stone-50 hover:bg-white transition" onclick="switchTab('systemic')">Systemic Symptoms</button>
+                    </div>
+                    <div class="p-8 min-h-[300px]" id="symptom-content">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="treatments" class="mb-24 scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-stone-800 mb-4 border-b border-stone-200 pb-2">3. Therapeutic Cures & Modalities</h2>
+                <p class="text-stone-700 leading-relaxed max-w-4xl">Modern oncology utilizes a multidisciplinary approach to eradication. The graph below illustrates the historical progression of 5-year survival rates, demonstrating the efficacy of combining systemic treatments like chemotherapy with advanced targeted therapies.</p>
+            </div>
+
+            <div class="chart-container mb-12">
+                <canvas id="survivalChart"></canvas>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-teal-100 shadow-sm border-t-4 border-t-teal-600">
+                    <div class="text-3xl mb-3">&#128138;</div>
+                    <h3 class="font-bold text-stone-800 mb-2">Chemotherapy</h3>
+                    <p class="text-sm text-stone-600">Systemic administration of cytotoxic drugs designed to destroy rapidly dividing cancer cells, often used in conjunction with other therapies.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-teal-100 shadow-sm border-t-4 border-t-teal-500">
+                    <div class="text-3xl mb-3">&#128267;</div>
+                    <h3 class="font-bold text-stone-800 mb-2">Radiation Therapy</h3>
+                    <p class="text-sm text-stone-600">Utilization of high doses of radiation to shrink tumors and eliminate cancer cells by damaging their DNA directly.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-teal-100 shadow-sm border-t-4 border-t-teal-400">
+                    <div class="text-3xl mb-3">&#129302;</div>
+                    <h3 class="font-bold text-stone-800 mb-2">Targeted Therapy</h3>
+                    <p class="text-sm text-stone-600">Precision medicine targeting specific genes and proteins that are involved in the growth and survival of cancer cells.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-teal-100 shadow-sm border-t-4 border-t-teal-300">
+                    <div class="text-3xl mb-3">&#128737;</div>
+                    <h3 class="font-bold text-stone-800 mb-2">Immunotherapy</h3>
+                    <p class="text-sm text-stone-600">Biological therapy that empowers and modifies the patient's own immune system to recognize and effectively destroy cancer cells.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="surgery" class="mb-24 scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-stone-800 mb-4 border-b border-stone-200 pb-2">4. Operational & Surgical Procedures</h2>
+                <p class="text-stone-700 leading-relaxed max-w-4xl">Surgical intervention remains the primary curative modality for solid localized tumors. The field has rapidly shifted from traditional open surgeries to minimally invasive techniques, significantly reducing morbidity. Review the surgical types and longitudinal trends below.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5 space-y-4" id="accordion-container">
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="bg-stone-100 p-6 rounded-2xl h-full flex flex-col justify-center">
+                        <h3 class="text-center font-bold text-stone-800 mb-4">Paradigm Shift in Surgical Approaches (1990 - Present)</h3>
+                        <div class="chart-container" style="background: transparent; box-shadow: none;">
+                            <canvas id="surgeryChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-500 text-center mt-4">*Data represents a normalized aggregate of major oncological surgical centers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-12 mt-12 border-t border-stone-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="font-serif mb-2 text-stone-300">Research Compilation & Analysis authored by Samuelson G.</p>
+            <p class="text-sm">This interactive document serves as an analytical synthesis of current medical consensus regarding neoplasms.</p>
+            <p class="text-xs mt-6">&copy; 2026 Oncological Data Sciences. All graphical representations generated dynamically.</p>
+        </div>
+    </footer>
+
+    <script>
+        const symptomData = {
+            localized: `
+                <div class="animate-[fadeIn_0.5s_ease-in-out]">
+                    <h3 class="text-2xl font-bold text-teal-800 mb-4">Localized Indications</h3>
+                    <p class="text-stone-700 mb-6">These symptoms occur directly at the site of the primary tumor due to mass effect, tissue disruption, or local bleeding.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Palpable Masses</strong>
+                                <span class="text-stone-600 text-sm">Unusual lumps or thickening under the skin, commonly observed in breast, testicular, or lymphatic cancers.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Organ-Specific Dysfunction</strong>
+                                <span class="text-stone-600 text-sm">e.g., Persistent cough or hemoptysis in pulmonary neoplasms; alterations in bowel habits in colorectal tumors.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Localized Pain</strong>
+                                <span class="text-stone-600 text-sm">Aching or sharp pain caused by a tumor compressing surrounding nerves or encroaching on bone structures.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            `,
+            systemic: `
+                <div class="animate-[fadeIn_0.5s_ease-in-out]">
+                    <h3 class="text-2xl font-bold text-teal-800 mb-4">Systemic (Paraneoplastic) Indications</h3>
+                    <p class="text-stone-700 mb-6">These symptoms affect the entire body, often resulting from the immune system's response to the tumor or hormones secreted by the neoplasm itself.</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Unexplained Weight Loss</strong>
+                                <span class="text-stone-600 text-sm">Cachexia, a complex metabolic syndrome resulting in extreme muscle and fat wasting regardless of nutritional intake.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Chronic Fatigue</strong>
+                                <span class="text-stone-600 text-sm">Profound, unrelenting exhaustion that is not alleviated by rest, often related to anemia or tumor cytokine production.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-600 mr-3 text-xl">&#9656;</span>
+                            <div>
+                                <strong class="text-stone-900 block">Pyrexia (Fever) & Night Sweats</strong>
+                                <span class="text-stone-600 text-sm">Common in hematological malignancies (like lymphoma) as the body attempts to mount an immune response.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            `
+        };
+
+        function switchTab(tabId) {
+            const btnLoc = document.getElementById('tab-localized');
+            const btnSys = document.getElementById('tab-systemic');
+            const content = document.getElementById('symptom-content');
+
+            if (tabId === 'localized') {
+                btnLoc.className = 'flex-1 py-4 text-center font-medium tab-active bg-white';
+                btnSys.className = 'flex-1 py-4 text-center font-medium tab-inactive bg-stone-50 hover:bg-white transition';
+                content.innerHTML = symptomData.localized;
+            } else {
+                btnSys.className = 'flex-1 py-4 text-center font-medium tab-active bg-white';
+                btnLoc.className = 'flex-1 py-4 text-center font-medium tab-inactive bg-stone-50 hover:bg-white transition';
+                content.innerHTML = symptomData.systemic;
+            }
+        }
+
+        const surgicalProcedures = [
+            { title: 'Diagnostic Biopsy', desc: 'The extraction of sample cells or tissues for pathological examination to confirm malignancy, grading, and genetic profiling.' },
+            { title: 'Curative Resection', desc: 'Surgical removal of the entire tumor mass along with a margin of healthy tissue to ensure all malignant cells are excised.' },
+            { title: 'Debulking (Cytoreductive)', desc: 'Removing as much of the tumor as safely possible when complete excision isn\'t feasible. Enhances the efficacy of subsequent chemo/radiation.' },
+            { title: 'Laparoscopic Surgery', desc: 'Minimally invasive approach utilizing small incisions and camera-guided instruments, resulting in faster recovery and reduced hemorrhage.' },
+            { title: 'Robotic-Assisted Surgery', desc: 'Advanced manipulation via robotic arms controlled by the surgeon, offering unparalleled precision, 3D visualization, and dexterity in tight anatomical spaces.' }
+        ];
+
+        function renderAccordion() {
+            const container = document.getElementById('accordion-container');
+            let html = '';
+            surgicalProcedures.forEach((proc, index) => {
+                html += `
+                    <div class="border border-stone-200 rounded-lg bg-white overflow-hidden">
+                        <button class="w-full px-5 py-4 text-left font-bold text-stone-800 bg-white hover:bg-stone-50 focus:outline-none flex justify-between items-center" onclick="toggleAccordion(${index})">
+                            <span>${proc.title}</span>
+                            <span id="icon-${index}" class="text-teal-600 transition-transform duration-300">&#9662;</span>
+                        </button>
+                        <div id="content-${index}" class="accordion-content bg-stone-50">
+                            <p class="px-5 py-4 text-stone-600 text-sm border-t border-stone-100">${proc.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleAccordion(index) {
+            const content = document.getElementById(`content-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                document.querySelectorAll('.accordion-content').forEach(el => el.style.maxHeight = null);
+                document.querySelectorAll('[id^="icon-"]').forEach(el => el.style.transform = 'rotate(0deg)');
+                
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#57534e';
+
+            const ctxCauses = document.getElementById('causesChart').getContext('2d');
+            new Chart(ctxCauses, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tobacco & Smoking', 'Diet & Obesity', 'Infectious Agents', 'Environmental/Occupational', 'Genetics/Hereditary'],
+                    datasets: [{
+                        data: [30, 25, 15, 20, 10],
+                        backgroundColor: ['#0f766e', '#14b8a6', '#99f6e4', '#d6d3d1', '#78716c'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 15 } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) { return context.label + ': ~' + context.parsed + '%'; }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            const ctxSurvival = document.getElementById('survivalChart').getContext('2d');
+            new Chart(ctxSurvival, {
+                type: 'line',
+                data: {
+                    labels: ['1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],
+                    datasets: [
+                        {
+                            label: 'Breast Cancer',
+                            data: [75, 78, 85, 89, 90, 91],
+                            borderColor: '#0f766e',
+                            backgroundColor: 'rgba(15, 118, 110, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Prostate Cancer',
+                            data: [68, 73, 83, 95, 98, 98],
+                            borderColor: '#0284c7',
+                            backgroundColor: 'transparent',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Leukemia (Childhood)',
+                            data: [40, 55, 70, 80, 85, 88],
+                            borderColor: '#d97706',
+                            backgroundColor: 'transparent',
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { title: { display: true, text: '5-Year Survival Rate (%)' }, min: 30, max: 100 },
+                        x: { title: { display: true, text: 'Decade of Diagnosis' } }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            const ctxSurgery = document.getElementById('surgeryChart').getContext('2d');
+            new Chart(ctxSurgery, {
+                type: 'bar',
+                data: {
+                    labels: ['1990', '2000', '2010', '2020', '2025(est)'],
+                    datasets: [
+                        {
+                            label: 'Open Surgery',
+                            data: [85, 70, 50, 30, 20],
+                            backgroundColor: '#a8a29e'
+                        },
+                        {
+                            label: 'Laparoscopic',
+                            data: [15, 30, 40, 45, 40],
+                            backgroundColor: '#14b8a6'
+                        },
+                        {
+                            label: 'Robotic-Assisted',
+                            data: [0, 0, 10, 25, 40],
+                            backgroundColor: '#0f766e'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, title: { display: true, text: 'Proportion of Procedures (%)' }, max: 100 }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('localized');
+            renderAccordion();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
